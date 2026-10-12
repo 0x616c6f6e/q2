@@ -137,6 +137,37 @@ class PythonEntryTests(unittest.TestCase):
                 q2.main(args)
             self.assertEqual(command.call_count, 1)
 
+    def test_esp32_sdk_actions_and_serial_requirements(self):
+        sdk = self.directory / "esp32 sdk"
+        (sdk / "tools").mkdir(parents=True)
+        (sdk / "tools/idf.py").touch()
+        with (
+            patch.dict(os.environ, {"IDF_PATH": str(sdk)}, clear=True),
+            patch.object(q2, "prepare_esp_build"),
+            patch.object(q2, "generate"),
+            patch.object(q2, "command") as command,
+        ):
+            for action in ("configure", "build", "menuconfig", "flash", "monitor", "run"):
+                with self.subTest(action=action):
+                    command.reset_mock()
+                    args = [action, "--platform", "esp32"]
+                    if action in ("flash", "monitor", "run"):
+                        args += ["--port", "/dev/ttyUSB2"]
+                    q2.main(args)
+                    commands = [call.args[0] for call in command.call_args_list]
+                    expected = ["flash", "monitor"] if action == "run" else [
+                        "reconfigure" if action == "configure" else action
+                    ]
+                    self.assertEqual([argv[-1] for argv in commands], expected)
+                    for argv in commands:
+                        self.assertEqual(argv[1], sdk / "tools/idf.py")
+                        self.assertEqual(argv[argv.index("-C") + 1], ROOT / "platform/esp32")
+                        self.assertEqual(argv[argv.index("-B") + 1].name, "esp32")
+            command.reset_mock()
+            with self.assertRaisesRegex(ValueError, "Specify --port"):
+                q2.main(["run", "--profile", "esp32"])
+            command.assert_not_called()
+
     def test_invalid_cli_config_returns_nonzero_without_traceback(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / "q2.py"), "config", "set", "--profile", "host",

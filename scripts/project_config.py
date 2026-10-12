@@ -202,10 +202,11 @@ def load_config(path, target="x86"):
             data["app"]["startup"] == "homepage",
             "ESP32-S3 boots the resident homepage and embedded factory apps",
         )
-    elif target == "esp32s31":
+    elif target in ("esp32", "esp32s31"):
         require(
             not any(c.values()) and not data["web"]["enabled"],
-            "ESP32-S31 is a minimal port: disable all product components and web until drivers are implemented",
+            f"{target.upper()} is a minimal port: "
+            "disable all product components and web until drivers are implemented",
         )
     else:
         require(target == "kernel", "Unknown build target")

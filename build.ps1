@@ -4,7 +4,7 @@ param(
     [string]$Compiler = 'zig',
     [string]$Ninja = '',
     [string]$Config = '',
-    [ValidateSet('x86','host','kernel','esp32s31','esp32s3')][string]$Target = '',
+    [ValidateSet('x86','host','kernel','esp32','esp32s31','esp32s3')][string]$Target = '',
     [string]$Profile = '',
     [string]$BuildDir = '',
     [string]$AppName = '',

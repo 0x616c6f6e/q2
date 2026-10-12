@@ -11,7 +11,8 @@ import tempfile
 
 from scripts.project_config import ROOT, load_config, require, unique_object
 
-TARGETS = ("x86", "host", "kernel", "esp32s31", "esp32s3")
+ESP_TARGETS = ("esp32", "esp32s31", "esp32s3")
+TARGETS = ("x86", "host", "kernel", *ESP_TARGETS)
 
 
 @dataclass(frozen=True)
@@ -42,6 +43,9 @@ PROFILES = {
     ),
     "kernel": Profile(
         "kernel", "q2.kernel.json", "kernel", "Portable contract tests, including fake USB DCD"
+    ),
+    "esp32": Profile(
+        "esp32", "q2.esp32.json", "esp32", "Minimal ESP32 SDK port; product peripherals not implemented"
     ),
     "esp32s31": Profile(
         "esp32s31", "q2.esp32s31.json", "esp32s31", "Minimal SDK port; product peripherals not implemented"

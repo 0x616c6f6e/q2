@@ -74,13 +74,17 @@ display/apps/keys 的 provider 注册按配置控制，Kernel 的通用注册/AP
 python q2.py run --target host --config q2.local.json --compiler zig
 ```
 
-ESP32-S31 目前要求所有 components、web.enabled、system_ui.status_bar/screensaver 为 false，配置仍可设置日志、未来屏幕尺寸等产品参数。在已激活且支持 ESP32-S31 的 ESP-IDF 环境执行：
+ESP32 / ESP32-S31 目前要求所有 components、web.enabled、system_ui.status_bar/screensaver 为 false，配置仍可设置日志、未来屏幕尺寸等产品参数。在已激活且支持 ESP32-S31 的 ESP-IDF 环境执行：
 
 ```sh
 python q2.py build --target esp32s31 --config q2.local.json
 ```
 
-默认生成到根 build/esp32s31，sdkconfig 也在该目录；不会烧录。ESP 产品外设接入后，应补充实现、能力校验和硬件测试再放开对应开关。
+默认生成到根 build/esp32s31，sdkconfig 也在该目录；不会烧录。经典 ESP32 可以直接使用 `python q2.py build --profile esp32`，默认 `q2.esp32.json`，
+Linux 输出到 `build/linux/esp32`。配置复制自 S31 最小预设，未实现的组件仍全部关闭；
+硬件默认使用 4 MB Flash 和 SDK 默认 UART0，见 [ESP32 平台](../platform/esp32/README.md)。
+
+ESP 产品外设接入后，应补充实现、能力校验和硬件测试再放开对应开关。
 
 ## 独立 Platform 使用
 

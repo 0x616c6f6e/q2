@@ -8,7 +8,15 @@ import shutil
 import subprocess
 import sys
 
-from scripts.entry_config import PROFILES, TARGETS, build_directory, config_main, list_profiles, select_config
+from scripts.entry_config import (
+    ESP_TARGETS,
+    PROFILES,
+    TARGETS,
+    build_directory,
+    config_main,
+    list_profiles,
+    select_config,
+)
 from scripts.esp_build_cache import prepare_esp_build
 from scripts.project_config import ROOT, generate, repository_paths, require
 
@@ -228,7 +236,7 @@ def main(argv=None):
         list_profiles()
         return
     config = select_config(args)
-    is_esp = args.target in ("esp32s31", "esp32s3")
+    is_esp = args.target in ESP_TARGETS
     require(
         args.action not in ("menuconfig", "flash", "monitor") or is_esp,
         "menuconfig/flash/monitor require an ESP target",
@@ -264,7 +272,7 @@ def main(argv=None):
             "Linux SDL2 audio backend is not yet implemented; "
             "disable components.audio (see q2.linux.json)",
         )
-    if args.target in ("esp32s31", "esp32s3"):
+    if args.target in ESP_TARGETS:
         esp_build(args, config, paths, build)
         return
     configure(args, config, build)

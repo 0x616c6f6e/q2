@@ -16,7 +16,7 @@ q2/                       产品 Git 仓库
   ai/                     AI 工作协议与能力文档导航
   app/                    独立 Git：Lua APP、manifest、资源与打包工具
   kernel/                 独立 Git：C11 Kernel、组件、API、固定第三方库
-  platform/               独立 Git：x86 / host / ESP32-S31 平台适配
+  platform/               独立 Git：x86 / host / ESP32 / ESP32-S3 / ESP32-S31 平台适配
   build/<target>/          生成文件、程序和测试输出（不提交）
   dist/                   APP 开发包和 .run 目录（不提交）
 ```
@@ -109,3 +109,10 @@ Linux / WSL：先执行 `source ~/github/esp-idf/export.sh`，在 q2 根目录�
 `sdkconfig` 后重新构建；详见 [构建缓存说明](docs/development.md#esp-idf-构建缓存)。
 
 ESP32-S3 新增 [AM213 410×502 / CST820](platform/esp32s3/docs/am213.md)，使用独立根配置 `q2.esp32s3-am213.json`。
+
+## 经典 ESP32
+
+新增从 ESP32-S31 复制的最小 Kernel/runtime 移植，默认 4 MB Flash、UART0（GPIO1/3），
+产品配置为 `q2.esp32.json`。在激活的 ESP-IDF 环境执行 `python q2.py build --profile esp32`，
+烧录/串口使用 `python q2.py run --profile esp32 --port /dev/ttyUSB0`。
+屏幕、音频、网络等产品外设尚未接入，见 [ESP32 平台](platform/esp32/README.md)。

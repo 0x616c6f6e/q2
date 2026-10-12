@@ -20,6 +20,7 @@ python3 q2.py config list
 | esp32s3-am213 | ESP32-S3 / AM213 | q2.esp32s3-am213.json | build/linux/esp32s3-am213 |
 | host | 文本宿主 / device-info | q2.host.json | build/linux/host |
 | kernel | 内核契约测试（含 fake DCD） | q2.kernel.json | build/linux/kernel |
+| esp32 | 经典 ESP32 最小入口 | q2.esp32.json | build/linux/esp32 |
 | esp32s31 | 最小移植入口 | q2.esp32s31.json | build/linux/esp32s31 |
 
 不指定预设时默认当前操作系统的 x86；`--target esp32s3` 默认 AM178。
@@ -79,6 +80,8 @@ python3 q2.py test --profile kernel --compiler gcc
 # ESP32-S3 需要先激活当前 SDK；build 只构建，run 烧录后打开串口
 source ~/github/esp-idf/export.sh
 python q2.py build --profile esp32s3-am213
+# 经典 ESP32 最小 Kernel/runtime
+python q2.py build --profile esp32
 python q2.py menuconfig --profile esp32s3-am213
 python q2.py run --profile esp32s3-am213 --port /dev/ttyUSB0
 python q2.py flash --profile esp32s3-am213 --port /dev/ttyUSB0 --baud 460800
@@ -96,7 +99,7 @@ Windows 可直接调用 Python，或 `./build.ps1 -Profile esp32s3-am213`、
 不自动安装 SDK、不自动选择/打开串口；子工具失败后返回非零状态并停止后续步骤。
 
 x86-linux 尚未实现音频；ESP32-S3 当前提供屏幕、触摸和出厂 APP，
-ESP32-S31 仅最小移植入口，需要支持该芯片的 ESP-IDF，不能当作已实现的 MP3 产品固件。
+ESP32 / ESP32-S31 仅最小移植入口，需要支持该芯片的 ESP-IDF，不能当作已实现的 MP3 产品固件。
 `kernel` 是测试构建，不支持 `run`；fake USB DCD 不代表硬件 USB 已完成。
 
 ## 验证入口

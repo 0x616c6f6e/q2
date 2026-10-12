@@ -24,7 +24,8 @@ if(Q2_TARGET STREQUAL "kernel")
 elseif(Q2_TARGET STREQUAL "x86" OR Q2_TARGET STREQUAL "host")
   add_subdirectory("${Q2_PLATFORM_DIR}/${Q2_TARGET}" platform)
 else()
-  message(FATAL_ERROR "Use q2.py build --target esp32s3 (or esp32s31) for the separate ESP-IDF build system")
+  message(FATAL_ERROR
+    "Use q2.py build --target esp32, esp32s3 or esp32s31 for the separate ESP-IDF build system")
 endif()
 add_test(NAME q2_product_config COMMAND "${Python3_EXECUTABLE}"
   "${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_project_config.py")

@@ -244,6 +244,23 @@ class ProductConfigTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             load_config(self.path)
 
+    def test_esp32_minimal_port_rejects_unimplemented_devices(self):
+        self.config = json.loads((ROOT / "q2.esp32.json").read_text())
+        data = self.load(target="esp32")
+        self.assertFalse(any(data["components"].values()))
+        out = Path(self.temp.name) / "esp32-generated"
+        generate(data, out, "esp32")
+        self.assertIn("Q2_COMPONENT_DISPLAY 0u", (out / "q2_project_config.h").read_text())
+        for component in data["components"]:
+            config = copy.deepcopy(self.config)
+            config["components"][component] = True
+            with self.subTest(component=component), self.assertRaises(ValueError):
+                self.load(config, target="esp32")
+        config = copy.deepcopy(self.config)
+        config["system_ui"]["screensaver"] = True
+        with self.assertRaises(ValueError):
+            self.load(config, target="esp32")
+
     def test_minimal_host_and_esp_profiles(self):
         for name in self.config["components"]:
             self.config["components"][name] = False
@@ -251,6 +268,7 @@ class ProductConfigTests(unittest.TestCase):
         self.config["system_ui"].update(status_bar=False, screensaver=False)
         self.load(target="host")
         self.load(target="esp32s31")
+        self.load(target="esp32")
 
 
 if __name__ == "__main__":

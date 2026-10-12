@@ -12,7 +12,7 @@
 
 验收包括 host 契约测试、目标构建和硬件实测三种独立证据。编译通过不能替代 USB 枚举、SD 掉电、音频连续输出、无线共存或电源验证。AI 开发时记录使用的 SDK 版本、编译参数、固件大小和未验证项。
 
-产品主页集成参考 x86/main.c、catalog.c 和 Kernel application-manager.md：注册可信 APP 目录，bind caller-owned resident runtime，在 owner 的 poll 之后 advance。通过 apps_state 更新 lvgl_focus/keys_route；先 apps_shutdown 再销毁 Home runtime。普通 APP VM 由 manager 管理。非锁屏的物理 Home 操作由生命周期判断后请求回主页，可信平台快捷导航可转成 q2_apps_request(NULL)，不要在 ISR 或 Lua 回调里直接替换 VM。ESP32-S3 已接入只读出厂目录和常驻主页；ESP32-S31 仍为最小入口。
+产品主页集成参考 x86/main.c、catalog.c 和 Kernel application-manager.md：注册可信 APP 目录，bind caller-owned resident runtime，在 owner 的 poll 之后 advance。通过 apps_state 更新 lvgl_focus/keys_route；先 apps_shutdown 再销毁 Home runtime。普通 APP VM 由 manager 管理。非锁屏的物理 Home 操作由生命周期判断后请求回主页，可信平台快捷导航可转成 q2_apps_request(NULL)，不要在 ISR 或 Lua 回调里直接替换 VM。ESP32-S3 已接入只读出厂目录和常驻主页；ESP32 / ESP32-S31 仍为最小入口；经典 ESP32 适配复制自 S31，使用独立 SDK 目标和默认 Flash/UART 参数。
 
 按键接入使用 q2/keys.h：boot 前注册名称，SoC/驱动识别 SINGLE/DOUBLE/LONG 后从 owner 调用 q2_keys_report。不得将消抖/长按时间阈值塞入 Kernel。x86 的 web.c 接收原始按下/松开，由 key_input.c 在 owner 上使用单调时钟识别；阈值统一位于 q2/q2.json。Kernel 不依赖该配置。真实 ESP 按键识别尚未实现。
 
