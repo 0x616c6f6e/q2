@@ -1,7 +1,4 @@
-# Independent local Git checkouts; commit them in their own repositories.
-/app/
-/kernel/
-/platform/
+# Generated files and local-only product configuration.
 /build/
 /dist/
 /.tools/

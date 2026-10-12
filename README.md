@@ -21,7 +21,7 @@ q2/                       产品 Git 仓库
   dist/                   APP 开发包和 .run 目录（不提交）
 ```
 
-根 `.gitignore` 忽略三个子仓库；它们不是 submodule，也没有配置远端。请分别提交四个仓库。根仓库的 commit 不包含子仓库实现，克隆根仓库后需要另外放入三个 checkout；`q2.json.repositories` 可以指定相对根目录的路径或绝对路径。详见 [仓库管理](docs/repositories.md)。
+`app/`、`kernel/`、`platform/` 通过 Git submodule 引用各自的 GitHub 仓库；`.gitmodules` 保存地址，根 commit 固定三个子仓库的版本。各层源码仍分别开发和提交，根仓库只记录它们的 commit 引用。克隆时使用 `git clone --recurse-submodules <Q2仓库地址> q2`，已有 checkout 执行 `git submodule update --init --recursive`。`q2.json.repositories` 仍可指向其他 checkout 路径。详见 [仓库管理](docs/repositories.md)。
 
 ## 构建和运行
 

@@ -17,7 +17,7 @@ flowchart TB
 | Q2-Kernel | 组件协议、Lua API、权限、通用组件实现 | ESP-IDF、FreeRTOS、板级引脚、具体 APP |
 | Q2-Platform | 时钟、中断、线程、DMA、Flash 分区、引脚和外设驱动 | 反向修改 Kernel 才能接入的私有捷径 |
 
-现在 q2 为产品集成 Git 仓库，app、kernel、platform 各为独立 Git 仓库；尚未配置远端或 submodule。根配置和入口通过显式路径组合三者；Platform 独立构建仍显式传入 `Q2_KERNEL_DIR`。APP 工具只需要 Python 标准库。
+q2 为产品集成 Git 仓库，通过 Git submodule 引用 app、kernel、platform 的独立 GitHub 仓库，并固定其提交版本。根配置和入口通过显式路径组合三者；Platform 独立构建仍显式传入 `Q2_KERNEL_DIR`。APP 工具只需要 Python 标准库。
 
 ## 最小内核
 
@@ -59,7 +59,7 @@ input/keys 是可选的命名按键 provider：注册与订阅走组件契约，
 
 q2 根目录拥有 q2.json、构建/启动脚本、公共文档和 AI 指南。配置校验器生成 build/<target>/generated/ 下的 C 头文件和 CMake 选项；Platform 显式消费生成目录，Kernel 仅接收公开构建选项和注册调用，不读取产品 JSON。
 
-根仓库忽略三个子仓库目录，避免将独立仓库误当普通目录或生成不可克隆的隐式 gitlink。当前没有远端 URL，获取工作区需要分别提供三个 checkout；配置 repositories 可指向其他绝对或相对路径。
+根仓库使用 `.gitmodules` 的明确远端地址和三个 gitlink 固定子仓库版本，源码在各自仓库中提交。克隆时递归初始化子模块；变更子仓库后先提交并推送其版本，再在根仓库提交新的引用。配置 repositories 仍可指向其他绝对或相对路径。
 
 ## 通用状态与事件
 
