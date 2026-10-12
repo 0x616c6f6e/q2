@@ -1,0 +1,78 @@
+{
+  "format": 1,
+  "repositories": {
+    "app": "app",
+    "kernel": "kernel",
+    "platform": "platform"
+  },
+  "display": {
+    "width": 502,
+    "height": 410,
+    "cjk_font": false,
+    "rotation": 90,
+    "brightness": 80,
+    "panel": "am213"
+  },
+  "keys": {
+    "names": [
+      "POWER",
+      "BACK",
+      "PREV",
+      "NEXT",
+      "PLAY"
+    ],
+    "single_min_ms": 20,
+    "double_gap_ms": 300,
+    "long_press_ms": 800
+  },
+  "components": {
+    "display": true,
+    "storage": false,
+    "keys": false,
+    "apps": true,
+    "sqlite": false,
+    "usb": false,
+    "audio": false,
+    "wireless": false,
+    "data": false,
+    "network": false
+  },
+  "logging": {
+    "enabled": true,
+    "level": "info"
+  },
+  "web": {
+    "enabled": false,
+    "port": 8765
+  },
+  "app": {
+    "startup": "homepage",
+    "grants": [
+      "system.info",
+      "system.log",
+      "display.ui",
+      "display.brightness",
+      "apps.list",
+      "apps.launch",
+      "apps.navigate",
+      "appearance.read",
+      "appearance.write",
+      "system.ui.read",
+      "system.settings",
+      "system.lifecycle"
+    ]
+  },
+  "system_ui": {
+    "status_bar": true,
+    "status_bar_height": 32,
+    "screensaver": false,
+    "idle_timeout_ms": 30000,
+    "clock_move_interval_ms": 10000,
+    "lock_enabled": false,
+    "status_left": "Q2",
+    "status_right": "{battery}",
+    "saver_text": "{time}",
+    "unlock_key": "POWER",
+    "unlock_action": 2
+  }
+}

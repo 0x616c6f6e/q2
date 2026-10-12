@@ -1,0 +1,11 @@
+# Independent local Git checkouts; commit them in their own repositories.
+/app/
+/kernel/
+/platform/
+/build/
+/dist/
+/.tools/
+__pycache__/
+*.pyc
+*.log
+q2.local.json
