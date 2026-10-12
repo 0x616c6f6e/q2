@@ -4,7 +4,8 @@ param(
     [string]$Compiler = 'zig',
     [string]$Ninja = '',
     [string]$Config = '',
-    [ValidateSet('x86','host','kernel','esp32s31','esp32s3')][string]$Target = 'x86',
+    [ValidateSet('x86','host','kernel','esp32s31','esp32s3')][string]$Target = '',
+    [string]$Profile = '',
     [string]$BuildDir = '',
     [string]$AppName = '',
     [switch]$Headless,
@@ -15,13 +16,13 @@ param(
     [switch]$Test
 )
 $ErrorActionPreference = 'Stop'
-if (-not $Config) {
-    $q2ConfigName = if ($Target -eq 'esp32s3') { 'q2.esp32s3.json' } else { 'q2.json' }
-    $Config = Join-Path $PSScriptRoot $q2ConfigName
-}
-$q2Action = 'build' 
+
+$q2Action = 'build'
 if ($Test) { $q2Action = 'test' }
-$q2Args = @((Join-Path $PSScriptRoot 'q2.py'), $q2Action, '--target', $Target, '--config', $Config, '--cmake', $CMake)
+$q2Args = @((Join-Path $PSScriptRoot 'q2.py'), $q2Action, '--cmake', $CMake)
+if ($Target) { $q2Args += @('--target', $Target) }
+if ($Profile) { $q2Args += @('--profile', $Profile) }
+if ($Config) { $q2Args += @('--config', $Config) }
 if ($Compiler) { $q2Args += @('--compiler', $Compiler) }
 if ($Ninja) { $q2Args += @('--ninja', $Ninja) }
 if ($BuildDir) { $q2Args += @('--build-dir', $BuildDir) }

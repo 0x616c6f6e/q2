@@ -1,4 +1,4 @@
-"""Q2 product entry: build/run/test/pack and ESP-IDF menuconfig/flash/monitor."""
+"""Unified Q2 entry: platform/config management, build/run/test/pack and ESP-IDF tools."""
 
 import argparse
 import json
@@ -8,8 +8,9 @@ import shutil
 import subprocess
 import sys
 
+from scripts.entry_config import PROFILES, TARGETS, build_directory, config_main, list_profiles, select_config
 from scripts.esp_build_cache import prepare_esp_build
-from scripts.project_config import ROOT, generate, load_config, repository_paths, require
+from scripts.project_config import ROOT, generate, repository_paths, require
 
 
 def command(args, **kwargs):
@@ -185,12 +186,19 @@ def esp_build(args, config, paths, build):
         command(argv)
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+def main(argv=None):
+    """Dispatch management before build dependencies; keep existing script arguments compatible."""
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "config":
+        config_main(argv[1:])
+        return
+    parser = argparse.ArgumentParser(description=__doc__, epilog="Configuration: q2.py config --help")
     parser.add_argument(
-        "action", choices=("configure", "build", "run", "test", "pack", "menuconfig", "flash", "monitor")
+        "action",
+        choices=("configure", "build", "run", "test", "pack", "menuconfig", "flash", "monitor", "platforms"),
     )
-    parser.add_argument("--target", choices=("x86", "host", "kernel", "esp32s31", "esp32s3"), default="x86")
+    parser.add_argument("--target", "--platform", choices=TARGETS, help="Platform (default: host x86)")
+    parser.add_argument("--profile", choices=PROFILES, help="Platform/configuration preset")
     parser.add_argument("--config", type=Path)
     parser.add_argument("--build-dir", type=Path)
     parser.add_argument("--cmake", default=os.environ.get("Q2_CMAKE", "cmake"))
@@ -215,7 +223,11 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--monitor-only", action="store_true", help="ESP run: monitor without flashing")
     mode.add_argument("--flash-only", action="store_true", help="ESP run: flash without starting monitor")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+    if args.action == "platforms":
+        list_profiles()
+        return
+    config = select_config(args)
     is_esp = args.target in ("esp32s31", "esp32s3")
     require(
         args.action not in ("menuconfig", "flash", "monitor") or is_esp,
@@ -229,24 +241,16 @@ def main():
         all(value is None or value > 0 for value in (args.baud, args.monitor_baud)),
         "Serial baud rates must be positive",
     )
-    default_config = "q2.json"
-    if args.target == "esp32s3":
-        default_config = "q2.esp32s3.json"
-    elif args.target == "x86" and sys.platform == "linux":
-        default_config = "q2.linux.json"
-    args.config = (args.config or ROOT / default_config).resolve()
-    config = load_config(args.config, args.target)
     paths = repository_paths(config)
     for name, path in paths.items():
         require(path.is_dir(), f"Missing independent {name} checkout: {path}")
     require(args.jobs > 0 and 0 <= args.frames <= 1000000, "Invalid jobs/frames")
-    # WSL may share a checkout with Windows; compiler/cache paths cannot cross hosts.
-    build_root = ROOT / "build" if os.name == "nt" else ROOT / "build" / sys.platform
-    build = (args.build_dir or build_root / args.target).resolve()
+    build = build_directory(args)
     require(
         not any(path.is_relative_to(build) for path in (ROOT, *paths.values())),
         "Build directory cannot be a repository root or its ancestor",
     )
+    require(args.action != "run" or args.target != "kernel", "kernel is a test target; use test, not run")
     if args.action == "pack":
         pack(config, paths)
         return

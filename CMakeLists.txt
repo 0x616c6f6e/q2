@@ -33,3 +33,6 @@ add_test(NAME q2_esp_build_cache COMMAND "${Python3_EXECUTABLE}"
   "${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_esp_build_cache.py")
 add_test(NAME q2_linux_entry COMMAND "${Python3_EXECUTABLE}"
   "${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_linux_entry.py")
+
+add_test(NAME q2_python_entry COMMAND "${Python3_EXECUTABLE}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_python_entry.py")

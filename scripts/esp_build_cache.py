@@ -49,7 +49,16 @@ def prepare_esp_build(build, sdk, source, python, target):
         ),
     ):
         for key, value in expected.items():
-            if values.get(key) and not same_path(values[key], value):
+            if not values.get(key):
+                continue
+            # IDF compares interpreter spellings, not realpaths: python/python3 aliases
+            # and distinct virtualenvs may point at the same binary but use incompatible caches.
+            matches = (
+                os.path.normcase(values[key]) == os.path.normcase(str(value))
+                if key == "PYTHON"
+                else same_path(values[key], value)
+            )
+            if not matches:
                 reasons.append(f"{label} {key}: {values[key]} -> {value}")
         if values.get("IDF_TARGET") and values["IDF_TARGET"] != target:
             reasons.append(f"{label} IDF_TARGET: {values['IDF_TARGET']} -> {target}")

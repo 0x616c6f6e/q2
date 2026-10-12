@@ -46,7 +46,8 @@ clang-format --dry-run --Werror <files>
 不要在同一构建目录同时启动多个构建。
 
 切换 SDK、Python 或项目源目录时，主工程重新配置不一定会清除 bootloader 的独立 CMake 缓存。
-`q2.py` 会分别检查这两层缓存和项目描述中的 SDK 路径；发现不匹配时，将整个旧构建目录
+`q2.py` 会分别检查这两层缓存和项目描述中的 SDK 路径；
+Python 路径按 ESP-IDF 的比较规则处理，即使 `python` / `python3` 指向同一解释器，入口名称改变也需重建缓存；发现不匹配时，将整个旧构建目录
 移至同级 `<目录名>.sdk-backup-<时间戳>`，复制保留 `sdkconfig` / `sdkconfig.old`，然后重新生成。
 旧文件不会删除，新的固件仍输出到原构建目录。若原构建目录已被手动删除，则按平台
 `sdkconfig.defaults` 生成配置，无法恢复已删除的自定义 menuconfig 设置。

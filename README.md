@@ -7,7 +7,7 @@ Q2 的产品集成仓库：统一配置、构建/运行入口、公共开发文�
 ```text
 q2/                       产品 Git 仓库
   q2.json                 唯一产品配置源
-  q2.py                   configure / build / run / test / pack
+  q2.py                   平台/配置管理、编译、运行和 ESP-IDF 工具
   build.ps1 / run.ps1      Windows 简便入口
   build.sh / run.sh       Linux / WSL 构建与运行入口（默认 ESP32-S3）
   CMakeLists.txt          产品 CMake 入口
@@ -38,6 +38,17 @@ q2/                       产品 Git 仓库
 
 如果工具不在 PATH，增加 `-Python <python.exe> -CMake <cmake.exe> -Compiler <zig.exe> -Ninja <ninja.exe>`。不要使用 Windows Store 的未安装 Python 占位程序；先安装 Python 或显式传入实际解释器。
 
+Python 统一入口还提供配置预设和参数管理，详见 [Python 入口](docs/python-entry.md)：
+
+```sh
+python3 q2.py platforms
+python3 q2.py config show --profile esp32s3-am213
+python3 q2.py config init --profile esp32s3-am213
+python3 q2.py config set --profile esp32s3-am213 --config q2.local.json display.brightness=80
+python3 q2.py build --profile esp32s3-am213 --config q2.local.json
+python3 q2.py run --profile x86-linux
+```
+
 通用命令：
 
 ```sh
@@ -48,7 +59,7 @@ python q2.py test --compiler zig
 python q2.py pack
 ```
 
-脚本默认构建 x86；配置、编译与 APP 打包失败都会以非零状态退出。`--target kernel` 构建独立 Kernel 契约；host/esp32s31 必须使用符合平台能力的配置，见 [配置规则](docs/configuration.md)。独立子仓库的 CMake/打包入口仍可用，不强制依赖根仓库。
+脚本默认构建 x86；配置、编译与 APP 打包失败都会以非零状态退出。`--target kernel` 构建独立 Kernel 契约；host/esp32s31 已提供最小配置预设，也可显式选择符合平台能力的配置，见 [配置规则](docs/configuration.md)。独立子仓库的 CMake/打包入口仍可用，不强制依赖根仓库。
 
 从旧位置移动来的 build 缓存含绝对路径，**不要重用**。新入口从根 build/ 重新构建。原 platform/build/x86/app-data.lfs 不会删除、覆盖或自动迁移；需保留偏好时，可用 `q2.py run --storage-file <原文件路径>`，并先关闭占用它的旧进程。
 

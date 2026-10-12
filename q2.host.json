@@ -1,0 +1,69 @@
+{
+  "format": 1,
+  "repositories": {
+    "app": "app",
+    "kernel": "kernel",
+    "platform": "platform"
+  },
+  "display": {
+    "width": 448,
+    "height": 368,
+    "cjk_font": true,
+    "panel": "generic",
+    "rotation": 0
+  },
+  "keys": {
+    "names": [
+      "POWER",
+      "BACK",
+      "PREV",
+      "NEXT",
+      "PLAY"
+    ],
+    "single_min_ms": 20,
+    "double_gap_ms": 300,
+    "long_press_ms": 800
+  },
+  "components": {
+    "display": true,
+    "storage": true,
+    "keys": false,
+    "apps": false,
+    "sqlite": false,
+    "usb": false,
+    "audio": false,
+    "wireless": false,
+    "data": false,
+    "network": false
+  },
+  "logging": {
+    "enabled": true,
+    "level": "info"
+  },
+  "web": {
+    "enabled": false,
+    "port": 8765
+  },
+  "app": {
+    "startup": "device-info",
+    "grants": [
+      "system.info",
+      "system.log",
+      "display.text",
+      "storage.private"
+    ]
+  },
+  "system_ui": {
+    "status_bar": false,
+    "status_bar_height": 32,
+    "screensaver": false,
+    "idle_timeout_ms": 30000,
+    "clock_move_interval_ms": 10000,
+    "lock_enabled": false,
+    "status_left": "{time}",
+    "status_right": "{wifi} {bt} {ble} {battery}",
+    "saver_text": "{time}",
+    "unlock_key": "POWER",
+    "unlock_action": 2
+  }
+}

@@ -8,6 +8,14 @@ ESP32-S3 默认 `q2.esp32s3.json`；每次构建只读取所选的一份配置�
 Linux / WSL 根入口默认改用 `build/linux/<target>/generated/`，隔离 Windows 的绝对路径缓存。
 `--build-dir` 可显式覆盖；安装和构建方法见 [Linux 构建](linux-build.md)。
 
+## Python 管理入口
+
+使用 `python3 q2.py config list/show/validate/init/set` 列出、查看、校验、复制和批量修改配置。
+`--profile` 同时选择平台和配置；`--platform` 等同于 `--target`。
+AM178 / AM213 的预设构建目录独立，自定义配置使用独立缓存。
+配置修改完整校验后才原子写入，失败保留原文件。
+命令示例、预设表和缓存规则见 [Python 统一入口](python-entry.md)。
+
 ## 配置字段
 
 | 字段 | 默认 / 规则 |

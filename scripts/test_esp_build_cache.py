@@ -2,6 +2,7 @@
 
 import contextlib
 import io
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -50,6 +51,16 @@ class EspBuildCacheTests(unittest.TestCase):
     def test_python_change_and_partial_cache(self):
         self.cache(self.build / "CMakeCache.txt", PYTHON="/old/python")
         self.assertIsNotNone(self.prepare())
+
+    @unittest.skipUnless(os.name == "posix", "POSIX interpreter symlink aliases")
+    def test_python_alias_change_uses_idf_exact_path_comparison(self):
+        self.python.touch()
+        alias = self.python.with_name("python3")
+        alias.symlink_to(self.python)
+        self.cache(self.build / "CMakeCache.txt", PYTHON=alias)
+        backup = self.prepare()
+        self.assertIsNotNone(backup)
+        self.assertEqual((self.build / "sdkconfig").read_bytes(), self.settings)
 
     def test_source_directory_is_never_moved(self):
         self.cache(self.build / "CMakeCache.txt", IDF_PATH="/old/sdk")

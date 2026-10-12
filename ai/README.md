@@ -8,6 +8,7 @@
 - [Kernel 工作协议](kernel.md)：API、组件、生命周期、权限和验证。
 - [APP 工作协议](app.md)：Lua、manifest、能力申请及打包。
 - [Platform 接入规范](../docs/platform-development.md)：SDK、输入识别及 owner 调度。
+- [Python 统一入口](../docs/python-entry.md)：平台预设、配置事务、编译/运行/烧录；不要另建重复配置源。
 - [Linux 构建](../docs/linux-build.md)：ESP32-S3 交叉编译、WSL 环境和宿主缓存隔离。
 - [Linux SDL2](../docs/linux-x86.md)：x86 UI、q2.linux.json、POSIX 存储/Web、libcurl HTTP/HTTPS；音频未实现，不要宣称其可用。
 - [真实能力清单](../kernel/ai/capabilities.json)：保留在 Kernel 仓库，使独立契约检查无需父仓库；不要复制成第二份可漂移清单。
